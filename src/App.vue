@@ -1,30 +1,56 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li><a href="http://router.vuejs.org/" target="_blank">vue-router</a></li>
-      <li><a href="http://vuex.vuejs.org/" target="_blank">vuex</a></li>
-      <li><a href="http://vue-loader.vuejs.org/" target="_blank">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
-    </ul>
+    <Grid :style="{height: '450px' }"
+          :data-items="result"
+          :columns="columns"
+          :pageable="true"
+          :skip="skip"
+          :take="take"
+          :total="total"
+          @pagechange="pageChange">
+    </Grid>
+
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'app',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      dataItems:[],
+      skip: 0,
+      take: 10,
+      columns: [
+        { field: 'name'},
+        { field: 'surname'},
+        { field: 'gender'},
+        { field: 'region'}
+      ],
+
+    };
+  },
+  computed: {
+    result () {
+      return this.dataItems.slice(this.skip, this.take + this.skip)
+    },
+    total () {
+      return this.dataItems.length
+    }
+  },
+  mounted () {
+    axios
+      .get('https://uinames.com/api/?amount=25')
+      .then(response => {
+        this.dataItems = response.data
+      })
+  },
+  methods: {
+    pageChange(event) {
+      this.skip = event.page.skip;
+      this.take = event.page.take;
     }
   }
 }
@@ -33,28 +59,7 @@ export default {
 <style>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
   margin-top: 60px;
-}
-
-h1, h2 {
-  font-weight: normal;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: #42b983;
 }
 </style>
