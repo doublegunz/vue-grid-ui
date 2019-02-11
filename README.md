@@ -1,6 +1,6 @@
 # learn-vue-grid
 
-> project belajar membuat vue-grid
+> Repositori belajar menggunakan Vue Grid UI
 
 ## Build Setup
 
